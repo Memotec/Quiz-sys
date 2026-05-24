@@ -1,0 +1,79 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global safety net - Deny all by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Common global helpers
+    function isValidId(id) { 
+      return id is string && id.size() > 0 && id.size() <= 128; 
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // --- Users Collection Rules ---
+    match /users/{userId} {
+      allow read: if true;
+      allow create, update: if isValidId(userId) && isValidUser(incoming());
+      allow delete: if isValidId(userId);
+    }
+
+    function isValidUser(data) {
+      return data.u is string && data.u.size() >= 1 && data.u.size() <= 100 &&
+             data.p is string && data.p.size() >= 1 && data.p.size() <= 100 &&
+             data.role is string && (data.role == 'admin' || data.role == 'user');
+    }
+
+    // --- Questions Collection Rules ---
+    match /questions/{questionId} {
+      allow read: if true;
+      allow create, update: if isValidId(questionId) && isValidQuestion(incoming());
+      allow delete: if isValidId(questionId);
+    }
+
+    function isValidQuestion(data) {
+      return data.t is string && data.t.size() > 0 && data.t.size() <= 200 &&
+             data.q is string && data.q.size() > 0 && data.q.size() <= 2000 &&
+             data.o is list && data.o.size() == 4 &&
+             data.a is int && data.a >= 0 && data.a <= 3;
+    }
+
+    // --- Configs Collection Rules ---
+    match /configs/{configId} {
+      allow read: if true;
+      allow create, update: if isValidId(configId) && isValidConfig(incoming());
+      allow delete: if isValidId(configId);
+    }
+
+    function isValidConfig(data) {
+      return data.qty is int && data.qty > 0 && data.qty <= 500 &&
+             data.time is int && data.time > 0 && data.time <= 1440;
+    }
+
+    // --- Exam Results Collection Rules ---
+    match /results/{resultId} {
+      allow read: if true;
+      allow create: if isValidId(resultId) && isValidResult(incoming());
+      allow update, delete: if isValidId(resultId);
+    }
+
+    function isValidResult(data) {
+      return data.user is string && data.user.size() > 0 && data.user.size() <= 100 &&
+             data.score is int && data.score >= 0 && data.score <= 100 &&
+             data.correctCount is int && data.correctCount >= 0 &&
+             data.totalQuestions is int && data.totalQuestions > 0 &&
+             data.secondsTaken is int && data.secondsTaken >= 0 &&
+             data.createdAt != null;
+    }
+
+  }
+}

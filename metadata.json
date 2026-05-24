@@ -1,0 +1,6 @@
+{
+  "name": "Hệ thống Thi Trắc Nghiệm Chuyên Nghiệp",
+  "description": "Hệ thống thi trắc nghiệm phiên bản tối ưu hóa giao diện Exam Mode và bảng điều khiển quản trị viên",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,72 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User account for internal test take or admin",
+      "type": "object",
+      "properties": {
+        "u": { "type": "string" },
+        "p": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "user"] }
+      },
+      "required": ["u", "p", "role"]
+    },
+    "Question": {
+      "title": "Question",
+      "description": "Quiz question in the bank library",
+      "type": "object",
+      "properties": {
+        "t": { "type": "string" },
+        "q": { "type": "string" },
+        "o": { "type": "array" },
+        "a": { "type": "integer" },
+        "e": { "type": "string" },
+        "c": { "type": "string" }
+      },
+      "required": ["t", "q", "o", "a"]
+    },
+    "ExamConfig": {
+      "title": "ExamConfig",
+      "description": "Configuration metadata for the active exam",
+      "type": "object",
+      "properties": {
+        "qty": { "type": "integer" },
+        "time": { "type": "integer" }
+      },
+      "required": ["qty", "time"]
+    },
+    "ExamResult": {
+      "title": "ExamResult",
+      "description": "Historical records of completed student assessments",
+      "type": "object",
+      "properties": {
+        "user": { "type": "string" },
+        "score": { "type": "integer" },
+        "correctCount": { "type": "integer" },
+        "totalQuestions": { "type": "integer" },
+        "secondsTaken": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "answers": { "type": "object" }
+      },
+      "required": ["user", "score", "correctCount", "totalQuestions", "secondsTaken", "createdAt"]
+    }
+  },
+  "firestore": {
+    "users": {
+      "schema": "User",
+      "description": "Internal test-takers and admins credential directory"
+    },
+    "questions": {
+      "schema": "Question",
+      "description": "Bank of test questions uploaded/synced by admins"
+    },
+    "configs": {
+      "schema": "ExamConfig",
+      "description": "Global test configurations"
+    },
+    "results": {
+      "schema": "ExamResult",
+      "description": "History of completed examinations with answers and scores"
+    }
+  }
+}
