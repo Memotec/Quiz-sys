@@ -5,6 +5,7 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
+     base: './', // Thêm dòng này để hỗ trợ chế độ hosting
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
